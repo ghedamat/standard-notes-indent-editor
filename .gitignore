@@ -13,3 +13,4 @@ dist/app.css.map
 .sass-cache
 
 .idea
+.nix-node
