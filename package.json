@@ -4,9 +4,13 @@
   "description": "",
   "main": "dist/dist.js",
   "author": "Maxime Lapointe <maxhlap@gmail.com>",
+  "scripts": {
+    "serve": "http-server -p 8080 --cors",
+    "build": "grunt"
+  },
   "dependencies": {
-    "sn-codemirror-search": "1.0.0",
-    "linkify-it": "^2.2.0"
+    "linkify-it": "^2.2.0",
+    "sn-codemirror-search": "1.0.0"
   },
   "resolutions": {
     "**/**/node-gyp": "5.0.0"
@@ -24,6 +28,7 @@
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-newer": "^1.3.0",
+    "http-server": "^0.12.3",
     "sn-components-api": "1.2.8",
     "sn-stylekit": "2.0.19"
   }
