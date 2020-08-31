@@ -568,15 +568,15 @@ body, html {
 }
 
 .cm-formatting-todo {
-  color: red;
+  color: var(--sn-stylekit-danger-color);
 }
 
 .cm-formatting-todo-complete {
   text-decoration: line-through;
-  color: blue;
+  color: var(--sn-stylekit-neutral-color);
 }
 
 .cm-todo-complete {
   text-decoration: line-through;
-  color: blue;
+  color: var(--sn-stylekit-neutral-color);
 }

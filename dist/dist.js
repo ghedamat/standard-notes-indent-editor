@@ -10700,6 +10700,35 @@ function IndentEditor(target_textarea, indent_editor_options) {
     }
   };
 
+  this.markAsDone = function (cm) {
+    var sels = cm.listSelections();
+
+    for (var i = sels.length - 1; i >= 0; i--) {
+      var anchor = sels[i].anchor; // Nothing hightlighted, so copy whole line
+
+      var line = anchor.line;
+      var lineContent = cm.doc.getLine(line);
+
+      if (lineContent.match(/^\s*=/)) {
+        cm.replaceRange(lineContent.replace(/=/, "~"), {
+          line: line,
+          ch: 0
+        }, {
+          line: line,
+          ch: lineContent.length
+        });
+      } else if (lineContent.match(/^\s*~/)) {
+        cm.replaceRange(lineContent.replace(/~/, "="), {
+          line: line,
+          ch: 0
+        }, {
+          line: line,
+          ch: lineContent.length
+        });
+      }
+    }
+  };
+
   this.moveSelectedLinesUp = function (cm) {
     var sels = cm.listSelections();
     var lineRanges = this.selectionsToLineRanges(sels);
@@ -10886,7 +10915,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
                 prev_line = prev_line.replace(/\d+/, parseInt(digits, 10) + 1);
               }
 
-              new_indentation = /^\s*(\d+)\.\s+|[-*+>\s]*/.exec(prev_line)[0];
+              new_indentation = /^\s*(\d+)\.\s+|[-*+>=\s]*/.exec(prev_line)[0];
             }
 
             cm.replaceRange(new_indentation, sels[i].anchor, sels[i].head, "+input");
@@ -10897,6 +10926,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
         "Home": "goLineLeftSmart",
         "End": "goLineRight",
         "Ctrl-D": this.duplicate.bind(this),
+        "Ctrl-K": this.markAsDone.bind(this),
         "Cmd-D": this.duplicate.bind(this),
         // Shift has to be first for some reason...
         "Shift-Ctrl-Up": this.moveSelectedLinesUp.bind(this),
