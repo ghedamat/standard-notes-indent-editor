@@ -181,3 +181,16 @@ body, html {
 #config-panel a {
   color: var(--sn-stylekit-info-color) !important
 }
+
+.cm-formatting-todo {
+  color: red;
+}
+
+.cm-formatting-todo-complete {
+  text-decoration: line-through;
+  color: blue;
+}
+.cm-todo-complete {
+  text-decoration: line-through;
+  color: blue;
+}
