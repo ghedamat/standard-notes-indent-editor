@@ -10718,7 +10718,23 @@ function IndentEditor(target_textarea, indent_editor_options) {
           ch: lineContent.length
         });
       } else if (lineContent.match(/^\s*~/)) {
-        cm.replaceRange(lineContent.replace(/~/, "="), {
+        cm.replaceRange(lineContent.replace(/~/, "/"), {
+          line: line,
+          ch: 0
+        }, {
+          line: line,
+          ch: lineContent.length
+        });
+      } else if (lineContent.match(/^\s*\//)) {
+        cm.replaceRange(lineContent.replace(/\//, "<"), {
+          line: line,
+          ch: 0
+        }, {
+          line: line,
+          ch: lineContent.length
+        });
+      } else if (lineContent.match(/^\s*</)) {
+        cm.replaceRange(lineContent.replace(/</, "="), {
           line: line,
           ch: 0
         }, {
@@ -10927,6 +10943,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
         "End": "goLineRight",
         "Ctrl-D": this.duplicate.bind(this),
         "Ctrl-K": this.markAsDone.bind(this),
+        "Cmd-K": this.markAsDone.bind(this),
         "Cmd-D": this.duplicate.bind(this),
         // Shift has to be first for some reason...
         "Shift-Ctrl-Up": this.moveSelectedLinesUp.bind(this),
@@ -11237,6 +11254,18 @@ function IndentEditor(target_textarea, indent_editor_options) {
 
           if (incomplete) {
             return 'formatting-todo';
+          }
+
+          var delegated = matchRegexToString(stream, /\//, true);
+
+          if (delegated) {
+            return 'formatting-todo-delegated';
+          }
+
+          var backward = matchRegexToString(stream, /</, true);
+
+          if (backward) {
+            return 'formatting-todo-backward';
           }
 
           var complete = matchRegexToString(stream, /~/, true);

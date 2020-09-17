@@ -151,6 +151,14 @@
           if (incomplete) {
             return 'formatting-todo';
           }
+          let delegated = matchRegexToString(stream, /\//, true);
+          if (delegated) {
+            return 'formatting-todo-delegated';
+          }
+          let backward = matchRegexToString(stream, /</, true);
+          if (backward) {
+            return 'formatting-todo-backward';
+          }
           let complete = matchRegexToString(stream, /~/, true);
           if (complete) {
             state.inTodo = true;

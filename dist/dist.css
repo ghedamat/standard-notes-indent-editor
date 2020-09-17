@@ -571,6 +571,14 @@ body, html {
   color: var(--sn-stylekit-danger-color);
 }
 
+.cm-formatting-todo-delegated {
+  color: var(--sn-stylekit-warning-color);
+}
+
+.cm-formatting-todo-backward {
+  color: var(--sn-stylekit-warning-color);
+}
+
 .cm-formatting-todo-complete {
   text-decoration: line-through;
   color: var(--sn-stylekit-neutral-color);
