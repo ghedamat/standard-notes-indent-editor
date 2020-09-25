@@ -103,7 +103,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
     for (var i = sels.length - 1; i >= 0; i--) {
       var anchor = sels[i].anchor;
       var line = anchor.line;
-      cm.replaceRange(`[["${uuidv4()}"]]` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
+      cm.replaceRange(`[[${uuidv4().replaceAll('-','')}]]` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
     }
   }
 
