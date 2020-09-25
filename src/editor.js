@@ -102,9 +102,18 @@ function IndentEditor(target_textarea, indent_editor_options) {
     var sels = cm.listSelections();
     for (var i = sels.length - 1; i >= 0; i--) {
       var anchor = sels[i].anchor;
+      var line = anchor.line;
+      cm.replaceRange(`[["${uuidv4()}"]]` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
+    }
+  }
 
-        var line = anchor.line;
-        cm.replaceRange(`[["${uuidv4()}"]]` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
+  this.insertTime = function (cm) {
+    var sels = cm.listSelections();
+    for (var i = sels.length - 1; i >= 0; i--) {
+      var anchor = sels[i].anchor;
+      var line = anchor.line;
+      const date = new Date;
+      cm.replaceRange(`# ${date.toLocaleDateString("fr-CA")}` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
     }
   }
 
@@ -272,10 +281,11 @@ function IndentEditor(target_textarea, indent_editor_options) {
         "End": "goLineRight",
         "Ctrl-D": this.duplicate.bind(this),
         "Ctrl-K": this.markAsDone.bind(this),
-        "Ctrl-E": this.insertLink.bind(this),
         "Cmd-D": this.duplicate.bind(this),
         "Cmd-K": this.markAsDone.bind(this),
         // Shift has to be first for some reason...
+        "Shift-Ctrl-L": this.insertLink.bind(this),
+        "Shift-Ctrl-T": this.insertTime.bind(this),
         "Shift-Ctrl-Up": this.moveSelectedLinesUp.bind(this),
         "Shift-Cmd-Up": this.moveSelectedLinesUp.bind(this),
         "Shift-Ctrl-Down": this.moveSelectedLinesDown.bind(this),
