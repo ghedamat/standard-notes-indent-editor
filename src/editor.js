@@ -3,7 +3,7 @@
  * * wrapping the text in a special way
  * * keyboard shortcuts and click actions
  */
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 function IndentEditor(target_textarea, indent_editor_options) {
   var editor;
@@ -13,7 +13,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
   this.measureLineElement = function (elt) {
     var wrappingSpan = elt.firstElementChild;
 
-    var finalSpan = document.createElement('span');
+    var finalSpan = document.createElement("span");
     elt.appendChild(finalSpan);
 
     var measure = editor.display.lineMeasure;
@@ -25,9 +25,11 @@ function IndentEditor(target_textarea, indent_editor_options) {
     var leadingSpaceRects = [];
     for (var i = 0; i < wrappingSpan.childNodes.length; i++) {
       var span = wrappingSpan.childNodes[i];
-      var wrappedClassName = ' ' + span.className + ' ';
-      if (wrappedClassName.indexOf(' cm-leadingspace ') > -1 ||
-        wrappedClassName.indexOf(' cm-comment-block-indentation ') > -1) {
+      var wrappedClassName = " " + span.className + " ";
+      if (
+        wrappedClassName.indexOf(" cm-leadingspace ") > -1 ||
+        wrappedClassName.indexOf(" cm-comment-block-indentation ") > -1
+      ) {
         leadingSpaceRects.push(span.getBoundingClientRect());
       } else {
         break;
@@ -35,7 +37,9 @@ function IndentEditor(target_textarea, indent_editor_options) {
     }
 
     if (leadingSpaceRects.length) {
-      indentWidth = (leadingSpaceRects[leadingSpaceRects.length - 1].right - leadingSpaceRects[0].left);
+      indentWidth =
+        leadingSpaceRects[leadingSpaceRects.length - 1].right -
+        leadingSpaceRects[0].left;
     }
 
     var textMustWrap = wrappingSpan.offsetTop < finalSpan.offsetTop;
@@ -43,8 +47,8 @@ function IndentEditor(target_textarea, indent_editor_options) {
     measure.removeChild(elt);
     elt.removeChild(finalSpan);
 
-    return {indentWidth: indentWidth, textMustWrap: textMustWrap}
-  }
+    return { indentWidth: indentWidth, textMustWrap: textMustWrap };
+  };
 
   this.selectionsToLineRanges = function (sels) {
     var lineRanges = [];
@@ -65,11 +69,11 @@ function IndentEditor(target_textarea, indent_editor_options) {
         // The last pair ends on the line before this selection. We just group them together
         lastPair[1] = endLine;
       } else {
-        lineRanges.push([startLine, endLine])
+        lineRanges.push([startLine, endLine]);
       }
     }
     return lineRanges;
-  }
+  };
 
   this.duplicate = function (cm) {
     var sels = cm.listSelections();
@@ -81,11 +85,19 @@ function IndentEditor(target_textarea, indent_editor_options) {
         // Nothing hightlighted, so copy whole line
         var line = anchor.line;
         var lineContent = cm.doc.getLine(line);
-        cm.replaceRange(lineContent + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
+        cm.replaceRange(
+          lineContent + cm.doc.lineSeparator(),
+          { line: line, ch: 0 },
+          { line: line, ch: 0 },
+          "+input"
+        );
       } else {
         // If something is highlighted, only copy that
         var start, end;
-        if (anchor.line < head.line || anchor.line == head.line && anchor.ch < head.ch) {
+        if (
+          anchor.line < head.line ||
+          (anchor.line == head.line && anchor.ch < head.ch)
+        ) {
           start = anchor;
           end = head;
         } else {
@@ -96,26 +108,36 @@ function IndentEditor(target_textarea, indent_editor_options) {
         cm.replaceRange(content, start, start, "+input");
       }
     }
-  }
+  };
 
   this.insertLink = function (cm) {
     var sels = cm.listSelections();
     for (var i = sels.length - 1; i >= 0; i--) {
       var anchor = sels[i].anchor;
       var line = anchor.line;
-      cm.replaceRange(`[[${uuidv4().replaceAll('-','')}]]` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
+      cm.replaceRange(
+        `[[${uuidv4().replace(/-/g, "")}]]` + cm.doc.lineSeparator(),
+        { line: line, ch: 0 },
+        { line: line, ch: 0 },
+        "+input"
+      );
     }
-  }
+  };
 
   this.insertTime = function (cm) {
     var sels = cm.listSelections();
     for (var i = sels.length - 1; i >= 0; i--) {
       var anchor = sels[i].anchor;
       var line = anchor.line;
-      const date = new Date;
-      cm.replaceRange(`# ${date.toLocaleDateString("fr-CA")}` + cm.doc.lineSeparator(), {line: line, ch: 0}, {line: line, ch: 0}, "+input");
+      const date = new Date();
+      cm.replaceRange(
+        `# ${date.toLocaleDateString("fr-CA")}` + cm.doc.lineSeparator(),
+        { line: line, ch: 0 },
+        { line: line, ch: 0 },
+        "+input"
+      );
     }
-  }
+  };
 
   this.markAsDone = function (cm) {
     var sels = cm.listSelections();
@@ -126,17 +148,32 @@ function IndentEditor(target_textarea, indent_editor_options) {
       var line = anchor.line;
       var lineContent = cm.doc.getLine(line);
       if (lineContent.match(/^\s*=/)) {
-        cm.replaceRange(lineContent.replace(/=/, "~"), {line: line, ch: 0}, {line: line, ch: lineContent.length});
+        cm.replaceRange(
+          lineContent.replace(/=/, "~"),
+          { line: line, ch: 0 },
+          { line: line, ch: lineContent.length }
+        );
       } else if (lineContent.match(/^\s*~/)) {
-        cm.replaceRange(lineContent.replace(/~/, "/"), {line: line, ch: 0}, {line: line, ch: lineContent.length});
+        cm.replaceRange(
+          lineContent.replace(/~/, "/"),
+          { line: line, ch: 0 },
+          { line: line, ch: lineContent.length }
+        );
       } else if (lineContent.match(/^\s*\//)) {
-        cm.replaceRange(lineContent.replace(/\//, "<"), {line: line, ch: 0}, {line: line, ch: lineContent.length});
+        cm.replaceRange(
+          lineContent.replace(/\//, "<"),
+          { line: line, ch: 0 },
+          { line: line, ch: lineContent.length }
+        );
       } else if (lineContent.match(/^\s*</)) {
-        cm.replaceRange(lineContent.replace(/</, "="), {line: line, ch: 0}, {line: line, ch: lineContent.length});
-
+        cm.replaceRange(
+          lineContent.replace(/</, "="),
+          { line: line, ch: 0 },
+          { line: line, ch: lineContent.length }
+        );
       }
     }
-  }
+  };
 
   this.moveSelectedLinesUp = function (cm) {
     var sels = cm.listSelections();
@@ -149,7 +186,10 @@ function IndentEditor(target_textarea, indent_editor_options) {
       for (var i = 0; i < sels.length; i++) {
         var anchor = sels[i].anchor;
         var head = sels[i].head;
-        if (anchor.line <= lastLineTouchingFirstLine || head.line <= lastLineTouchingFirstLine) {
+        if (
+          anchor.line <= lastLineTouchingFirstLine ||
+          head.line <= lastLineTouchingFirstLine
+        ) {
           nbSelsTouchingFirstLine += 1;
         } else {
           break;
@@ -169,21 +209,34 @@ function IndentEditor(target_textarea, indent_editor_options) {
 
       var prevLineContent = cm.doc.getLine(startLine - 1);
       var chOfEndLine = cm.doc.getLine(endLine).length;
-      cm.replaceRange(cm.doc.lineSeparator() + prevLineContent, {line: endLine, ch: chOfEndLine}, {line: endLine, ch: chOfEndLine}, "+input");
-      cm.replaceRange('', {line: startLine - 1, ch: 0}, {line: startLine, ch: 0}, "+input");
+      cm.replaceRange(
+        cm.doc.lineSeparator() + prevLineContent,
+        { line: endLine, ch: chOfEndLine },
+        { line: endLine, ch: chOfEndLine },
+        "+input"
+      );
+      cm.replaceRange(
+        "",
+        { line: startLine - 1, ch: 0 },
+        { line: startLine, ch: 0 },
+        "+input"
+      );
     }
 
-    var newSels = []
+    var newSels = [];
     for (var i = 0; i < nbSelsTouchingFirstLine; i++) {
       newSels.push(sels[i]);
     }
     for (var i = nbSelsTouchingFirstLine; i < sels.length; i++) {
       var anchor = sels[i].anchor;
       var head = sels[i].head;
-      newSels.push({anchor: {line: anchor.line - 1, ch: anchor.ch}, head: {line: head.line - 1, ch: head.ch}});
+      newSels.push({
+        anchor: { line: anchor.line - 1, ch: anchor.ch },
+        head: { line: head.line - 1, ch: head.ch },
+      });
     }
     cm.doc.setSelections(newSels);
-  }
+  };
 
   this.moveSelectedLinesDown = function (cm) {
     var sels = cm.listSelections();
@@ -197,7 +250,10 @@ function IndentEditor(target_textarea, indent_editor_options) {
       for (var i = sels.length - 1; i >= 0; i--) {
         var anchor = sels[i].anchor;
         var head = sels[i].head;
-        if (anchor.line >= firstLineTouchingLastLine || head.line >= firstLineTouchingLastLine) {
+        if (
+          anchor.line >= firstLineTouchingLastLine ||
+          head.line >= firstLineTouchingLastLine
+        ) {
           nbSelsTouchingLastLine += 1;
         } else {
           break;
@@ -216,9 +272,18 @@ function IndentEditor(target_textarea, indent_editor_options) {
       }
 
       var nextLineContent = cm.doc.getLine(endLine + 1);
-      cm.replaceRange('', {line: endLine, ch: cm.doc.getLine(endLine).length},
-        {line: endLine + 1, ch: cm.doc.getLine(endLine + 1).length}, "+input");
-      cm.replaceRange(nextLineContent + cm.doc.lineSeparator(), {line: startLine, ch: 0}, {line: startLine, ch: 0}, "+input");
+      cm.replaceRange(
+        "",
+        { line: endLine, ch: cm.doc.getLine(endLine).length },
+        { line: endLine + 1, ch: cm.doc.getLine(endLine + 1).length },
+        "+input"
+      );
+      cm.replaceRange(
+        nextLineContent + cm.doc.lineSeparator(),
+        { line: startLine, ch: 0 },
+        { line: startLine, ch: 0 },
+        "+input"
+      );
     }
 
     var newSels = [];
@@ -227,13 +292,16 @@ function IndentEditor(target_textarea, indent_editor_options) {
     for (var i = 0; i < nbLineRangetochange; i++) {
       var anchor = sels[i].anchor;
       var head = sels[i].head;
-      newSels.push({anchor: {line: anchor.line + 1, ch: anchor.ch}, head: {line: head.line + 1, ch: head.ch}});
+      newSels.push({
+        anchor: { line: anchor.line + 1, ch: anchor.ch },
+        head: { line: head.line + 1, ch: head.ch },
+      });
     }
     for (var i = nbLineRangetochange; i < sels.length; i++) {
       newSels.push(sels[i]);
     }
     cm.doc.setSelections(newSels);
-  }
+  };
 
   this.setupEditor = function (target_textarea) {
     this.editor = editor = CodeMirror.fromTextArea(target_textarea, {
@@ -243,14 +311,19 @@ function IndentEditor(target_textarea, indent_editor_options) {
       indentUnit: 2,
       extraKeys: {
         "Alt-F": "findPersistent",
-        Tab: 'indentMore',
-        'Shift-Tab': 'indentLess',
-        "Enter": (cm) => {
+        Tab: "indentMore",
+        "Shift-Tab": "indentLess",
+        Enter: (cm) => {
           var sels = cm.listSelections();
           var tokens = [];
           for (var i = sels.length - 1; i >= 0; i--) {
             tokens.push(cm.getTokenAt(sels[i].anchor, true));
-            cm.replaceRange(cm.doc.lineSeparator(), sels[i].anchor, sels[i].head, "+input");
+            cm.replaceRange(
+              cm.doc.lineSeparator(),
+              sels[i].anchor,
+              sels[i].head,
+              "+input"
+            );
           }
 
           var new_indentation;
@@ -263,7 +336,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
                 new_indentation = /^\s*/.exec(prev_line)[0];
               } else {
                 new_indentation = /^[-*+>\s]*/.exec(prev_line)[0];
-                new_indentation = new_indentation.replace(/[-*+>]/g, ' ');
+                new_indentation = new_indentation.replace(/[-*+>]/g, " ");
               }
             } else {
               // Need a space after the dot, or to reach the end of the line
@@ -273,12 +346,17 @@ function IndentEditor(target_textarea, indent_editor_options) {
               }
               new_indentation = /^\s*(\d+)\.\s+|[-*+>=\s]*/.exec(prev_line)[0];
             }
-            cm.replaceRange(new_indentation, sels[i].anchor, sels[i].head, "+input");
+            cm.replaceRange(
+              new_indentation,
+              sels[i].anchor,
+              sels[i].head,
+              "+input"
+            );
           }
           cm.scrollIntoView();
         },
-        "Home": "goLineLeftSmart",
-        "End": "goLineRight",
+        Home: "goLineLeftSmart",
+        End: "goLineRight",
         "Ctrl-D": this.duplicate.bind(this),
         "Ctrl-K": this.markAsDone.bind(this),
         "Cmd-D": this.duplicate.bind(this),
@@ -290,25 +368,28 @@ function IndentEditor(target_textarea, indent_editor_options) {
         "Shift-Cmd-Up": this.moveSelectedLinesUp.bind(this),
         "Shift-Ctrl-Down": this.moveSelectedLinesDown.bind(this),
         "Shift-Cmd-Down": this.moveSelectedLinesDown.bind(this),
-      }
+      },
     });
     // only use CodeMirror markselection when not in contenteditable
-    editor.setOption("styleSelectedText", editor.getOption('inputStyle') != 'contenteditable');
+    editor.setOption(
+      "styleSelectedText",
+      editor.getOption("inputStyle") != "contenteditable"
+    );
 
     editor.setSize("100%", "100%");
 
-    editor.on('mousedown', function (cm, e) {
+    editor.on("mousedown", function (cm, e) {
       if (e.ctrlKey || e.metaKey) {
-        if ((' ' + e.target.className + ' ').includes(' cm-link ')) {
+        if ((" " + e.target.className + " ").includes(" cm-link ")) {
           // We don't want to add an extra cursor in in the editor when ctrl-clicking a link
           e.preventDefault();
         }
       }
     });
 
-    editor.getWrapperElement().addEventListener('click', function (e) {
+    editor.getWrapperElement().addEventListener("click", function (e) {
       if (e.ctrlKey || e.metaKey) {
-        if ((' ' + e.target.className + ' ').includes(' cm-link ')) {
+        if ((" " + e.target.className + " ").includes(" cm-link ")) {
           var address = e.target.textContent;
 
           if (!/^https?:\/\//.test(address)) {
@@ -316,15 +397,18 @@ function IndentEditor(target_textarea, indent_editor_options) {
           }
 
           var userAgent = navigator.userAgent.toLowerCase();
-          if (userAgent.indexOf(' electron/') > -1) {
+          if (userAgent.indexOf(" electron/") > -1) {
             // Desktop (Electron)
             window.open(address);
-          } else if (typeof navigator != 'undefined' && navigator.product == 'ReactNative') {
+          } else if (
+            typeof navigator != "undefined" &&
+            navigator.product == "ReactNative"
+          ) {
             // Android / iOS
             window.open(address);
           } else {
             // Browser. This is a old browser compatible way of making sure the target cannot
-            var newWin = window.open(undefined, '_blank'); // Reset the opener link
+            var newWin = window.open(undefined, "_blank"); // Reset the opener link
 
             newWin.opener = null; // Now load the correct url
 
@@ -358,25 +442,29 @@ function IndentEditor(target_textarea, indent_editor_options) {
       // Making the lines after the first have just the right indentation using padding.
       // And making the first line back to where it would be by removing that padding.
       elt.style.textIndent = "-" + wrapOffset + "px";
-      elt.style.paddingLeft = (basePadding + wrapOffset) + "px";
+      elt.style.paddingLeft = basePadding + wrapOffset + "px";
     });
 
-    this.setAllowLongerLinesNoRefresh(!!indent_editor_options.allow_longer_lines)
-    this.setColorHeaders(!!indent_editor_options.color_headers)
-    this.setMonospaceNoRefresh(!!indent_editor_options.monospace)
+    this.setAllowLongerLinesNoRefresh(
+      !!indent_editor_options.allow_longer_lines
+    );
+    this.setColorHeaders(!!indent_editor_options.color_headers);
+    this.setMonospaceNoRefresh(!!indent_editor_options.monospace);
 
     editor.refresh();
 
     // Need to do refresh on the codemirror instance when there is resizing
     // This is necessary for to fix the max wrapping width in hte edge cases that it is necessary...
     var resize_timeout_handle;
-    window.addEventListener('resize', function () {
+    window.addEventListener("resize", function () {
       // We don't want to refresh instantly, to avoid making things too slow. So we only do it once it has
       // been 1s without resize
       clearTimeout(resize_timeout_handle);
-      resize_timeout_handle = setTimeout(function () {editor.refresh();}, 1000)
+      resize_timeout_handle = setTimeout(function () {
+        editor.refresh();
+      }, 1000);
     });
-  }
+  };
 
   this.setAllowLongerLinesNoRefresh = function (true_false) {
     indent_editor_options.allow_longer_lines = true_false;
@@ -385,12 +473,12 @@ function IndentEditor(target_textarea, indent_editor_options) {
     } else {
       this.editor.getWrapperElement().classList.add("remove-longer-lines");
     }
-  }
+  };
 
   this.setAllowLongerLines = function (true_false) {
     this.setAllowLongerLinesNoRefresh(true_false);
     this.editor.refresh();
-  }
+  };
 
   this.setColorHeaders = function (true_false) {
     indent_editor_options.color_headers = true_false;
@@ -399,22 +487,23 @@ function IndentEditor(target_textarea, indent_editor_options) {
     } else {
       this.editor.getWrapperElement().classList.remove("cfg-color-headers");
     }
-  }
+  };
 
   this.setMonospaceNoRefresh = function (true_false) {
     indent_editor_options.monospace = true_false;
     if (true_false) {
       this.editor.getWrapperElement().classList.add("use-monospace-everywhere");
     } else {
-      this.editor.getWrapperElement().classList.remove("use-monospace-everywhere");
+      this.editor
+        .getWrapperElement()
+        .classList.remove("use-monospace-everywhere");
     }
-  }
+  };
 
   this.setMonospace = function (true_false) {
     this.setMonospaceNoRefresh(true_false);
     this.editor.refresh();
-  }
+  };
 
-
-  this.setupEditor(target_textarea)
-};
+  this.setupEditor(target_textarea);
+}
