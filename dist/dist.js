@@ -10592,7 +10592,7 @@ if (window) {
  * * wrapping the text in a special way
  * * keyboard shortcuts and click actions
  */
-var _require = require('uuid'),
+var _require = require("uuid"),
     uuidv4 = _require.v4;
 
 function IndentEditor(target_textarea, indent_editor_options) {
@@ -10602,7 +10602,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
 
   this.measureLineElement = function (elt) {
     var wrappingSpan = elt.firstElementChild;
-    var finalSpan = document.createElement('span');
+    var finalSpan = document.createElement("span");
     elt.appendChild(finalSpan);
     var measure = editor.display.lineMeasure;
 
@@ -10616,9 +10616,9 @@ function IndentEditor(target_textarea, indent_editor_options) {
 
     for (var i = 0; i < wrappingSpan.childNodes.length; i++) {
       var span = wrappingSpan.childNodes[i];
-      var wrappedClassName = ' ' + span.className + ' ';
+      var wrappedClassName = " " + span.className + " ";
 
-      if (wrappedClassName.indexOf(' cm-leadingspace ') > -1 || wrappedClassName.indexOf(' cm-comment-block-indentation ') > -1) {
+      if (wrappedClassName.indexOf(" cm-leadingspace ") > -1 || wrappedClassName.indexOf(" cm-comment-block-indentation ") > -1) {
         leadingSpaceRects.push(span.getBoundingClientRect());
       } else {
         break;
@@ -10709,7 +10709,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
     for (var i = sels.length - 1; i >= 0; i--) {
       var anchor = sels[i].anchor;
       var line = anchor.line;
-      cm.replaceRange("[[".concat(uuidv4().replaceAll('-', ''), "]]") + cm.doc.lineSeparator(), {
+      cm.replaceRange("[[".concat(uuidv4().replace(/-/g, ""), "]]") + cm.doc.lineSeparator(), {
         line: line,
         ch: 0
       }, {
@@ -10820,7 +10820,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
         line: endLine,
         ch: chOfEndLine
       }, "+input");
-      cm.replaceRange('', {
+      cm.replaceRange("", {
         line: startLine - 1,
         ch: 0
       }, {
@@ -10885,7 +10885,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
       }
 
       var nextLineContent = cm.doc.getLine(endLine + 1);
-      cm.replaceRange('', {
+      cm.replaceRange("", {
         line: endLine,
         ch: cm.doc.getLine(endLine).length
       }, {
@@ -10934,9 +10934,9 @@ function IndentEditor(target_textarea, indent_editor_options) {
       indentUnit: 2,
       extraKeys: {
         "Alt-F": "findPersistent",
-        Tab: 'indentMore',
-        'Shift-Tab': 'indentLess',
-        "Enter": function Enter(cm) {
+        Tab: "indentMore",
+        "Shift-Tab": "indentLess",
+        Enter: function Enter(cm) {
           var sels = cm.listSelections();
           var tokens = [];
 
@@ -10957,7 +10957,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
                 new_indentation = /^\s*/.exec(prev_line)[0];
               } else {
                 new_indentation = /^[-*+>\s]*/.exec(prev_line)[0];
-                new_indentation = new_indentation.replace(/[-*+>]/g, ' ');
+                new_indentation = new_indentation.replace(/[-*+>]/g, " ");
               }
             } else {
               // Need a space after the dot, or to reach the end of the line
@@ -10975,8 +10975,8 @@ function IndentEditor(target_textarea, indent_editor_options) {
 
           cm.scrollIntoView();
         },
-        "Home": "goLineLeftSmart",
-        "End": "goLineRight",
+        Home: "goLineLeftSmart",
+        End: "goLineRight",
         "Ctrl-D": this.duplicate.bind(this),
         "Ctrl-K": this.markAsDone.bind(this),
         "Cmd-D": this.duplicate.bind(this),
@@ -10991,19 +10991,19 @@ function IndentEditor(target_textarea, indent_editor_options) {
       }
     }); // only use CodeMirror markselection when not in contenteditable
 
-    editor.setOption("styleSelectedText", editor.getOption('inputStyle') != 'contenteditable');
+    editor.setOption("styleSelectedText", editor.getOption("inputStyle") != "contenteditable");
     editor.setSize("100%", "100%");
-    editor.on('mousedown', function (cm, e) {
+    editor.on("mousedown", function (cm, e) {
       if (e.ctrlKey || e.metaKey) {
-        if ((' ' + e.target.className + ' ').includes(' cm-link ')) {
+        if ((" " + e.target.className + " ").includes(" cm-link ")) {
           // We don't want to add an extra cursor in in the editor when ctrl-clicking a link
           e.preventDefault();
         }
       }
     });
-    editor.getWrapperElement().addEventListener('click', function (e) {
+    editor.getWrapperElement().addEventListener("click", function (e) {
       if (e.ctrlKey || e.metaKey) {
-        if ((' ' + e.target.className + ' ').includes(' cm-link ')) {
+        if ((" " + e.target.className + " ").includes(" cm-link ")) {
           var address = e.target.textContent;
 
           if (!/^https?:\/\//.test(address)) {
@@ -11012,15 +11012,15 @@ function IndentEditor(target_textarea, indent_editor_options) {
 
           var userAgent = navigator.userAgent.toLowerCase();
 
-          if (userAgent.indexOf(' electron/') > -1) {
+          if (userAgent.indexOf(" electron/") > -1) {
             // Desktop (Electron)
             window.open(address);
-          } else if (typeof navigator != 'undefined' && navigator.product == 'ReactNative') {
+          } else if (typeof navigator != "undefined" && navigator.product == "ReactNative") {
             // Android / iOS
             window.open(address);
           } else {
             // Browser. This is a old browser compatible way of making sure the target cannot
-            var newWin = window.open(undefined, '_blank'); // Reset the opener link
+            var newWin = window.open(undefined, "_blank"); // Reset the opener link
 
             newWin.opener = null; // Now load the correct url
 
@@ -11065,7 +11065,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
     // This is necessary for to fix the max wrapping width in hte edge cases that it is necessary...
 
     var resize_timeout_handle;
-    window.addEventListener('resize', function () {
+    window.addEventListener("resize", function () {
       // We don't want to refresh instantly, to avoid making things too slow. So we only do it once it has
       // been 1s without resize
       clearTimeout(resize_timeout_handle);
@@ -11118,7 +11118,6 @@ function IndentEditor(target_textarea, indent_editor_options) {
   this.setupEditor(target_textarea);
 }
 
-;
 ;
 /**
 * This file handles part of the editor which is related to parsing the text and applying markup
