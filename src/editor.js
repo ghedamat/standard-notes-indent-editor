@@ -3,8 +3,6 @@
  * * wrapping the text in a special way
  * * keyboard shortcuts and click actions
  */
-const { v4: uuidv4 } = require("uuid");
-
 function IndentEditor(target_textarea, indent_editor_options) {
   var editor;
   var self = this;
@@ -115,8 +113,19 @@ function IndentEditor(target_textarea, indent_editor_options) {
     for (var i = sels.length - 1; i >= 0; i--) {
       var anchor = sels[i].anchor;
       var line = anchor.line;
+      const date = new Date();
+      const link = date
+        .toLocaleString("fr-CA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+        .replace(/[^0-9]/g, "");
+
       cm.replaceRange(
-        `[[${uuidv4().replace(/-/g, "")}]]` + cm.doc.lineSeparator(),
+        `[[${link}]]` + cm.doc.lineSeparator(),
         { line: line, ch: 0 },
         { line: line, ch: 0 },
         "+input"
