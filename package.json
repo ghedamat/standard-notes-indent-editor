@@ -1,6 +1,6 @@
 {
   "name": "sn-indent-editor-todo",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "",
   "main": "dist/dist.js",
   "author": "Maxime Lapointe <maxhlap@gmail.com>",
