@@ -133,7 +133,7 @@
         }
 
         if (!state.sawTextBeforeOnLine) {
-          var signs = matchRegexToString(stream, /#+/, true);
+          var signs = matchRegexToString(stream, /#+ /, true);
           if (signs) {
             // We got the start of a header!
             state.headerLevel = signs.length;

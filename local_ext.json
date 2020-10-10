@@ -3,6 +3,6 @@
     "name": "Indent Editor local test",
     "content_type": "SN|Component",
     "area": "editor-editor",
-    "version": "1.1.0",
+    "version": "2.0.10",
     "url": "http://localhost:8080"
 }

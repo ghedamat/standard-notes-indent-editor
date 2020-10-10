@@ -11275,7 +11275,7 @@ function IndentEditor(target_textarea, indent_editor_options) {
         }
 
         if (!state.sawTextBeforeOnLine) {
-          var signs = matchRegexToString(stream, /#+/, true);
+          var signs = matchRegexToString(stream, /#+ /, true);
 
           if (signs) {
             // We got the start of a header!
